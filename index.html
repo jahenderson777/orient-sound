@@ -16,22 +16,27 @@
 
 <script>
     let audioContext;
-    let oscillator1, oscillator2, gainNode1, gainNode2;
+    let oscillator1, oscillator2, oscillator3, gainNode1, gainNode2, gainNode3;
 
     function startTones() {
         oscillator1 = audioContext.createOscillator();
         oscillator2 = audioContext.createOscillator();
+        oscillator3 = audioContext.createOscillator();
         gainNode1 = audioContext.createGain();
         gainNode2 = audioContext.createGain();
+        gainNode3 = audioContext.createGain();
 
         oscillator1.frequency.setValueAtTime(300, audioContext.currentTime);
         oscillator2.frequency.setValueAtTime(600, audioContext.currentTime);
+        oscillator3.frequency.setValueAtTime(900, audioContext.currentTime);
         
         oscillator1.connect(gainNode1).connect(audioContext.destination);
         oscillator2.connect(gainNode2).connect(audioContext.destination);
+        oscillator3.connect(gainNode3).connect(audioContext.destination);
 
         oscillator1.start();
         oscillator2.start();
+        oscillator3.start();
 
         // Add to debug
         updateDebug("Tones started!");
@@ -43,13 +48,16 @@
             let compassVolume = Math.sin(alpha * Math.PI / 180);
             let beta = event.beta;
             let tiltVolume = beta / 90;
+            let gamma = event.gamma;
+            let gammaVolume = gamma / 90;
 
             gainNode1.gain.setValueAtTime(compassVolume, audioContext.currentTime); // Update compass sound volume
             gainNode2.gain.setValueAtTime(tiltVolume, audioContext.currentTime);  // Update tilt sound volume
-
+            gainNode3.gain.setValueAtTime(gammaVolume, audioContext.currentTime);
 
             updateDebug(`Alpha (compass): ${alpha.toFixed(2)} | Volume: ${compassVolume.toFixed(2)}<br>
-                         Beta (tilt): ${beta.toFixed(2)} | Volume: ${tiltVolume.toFixed(2)}`);
+                         Beta (tilt): ${beta.toFixed(2)} | Volume: ${tiltVolume.toFixed(2)}<br>
+                         Gamma: ${gamma.toFixed(2)} | Volume: ${gammaVolume.toFixed(2)}`);
         }, true);
     } else {
         updateDebug("DeviceOrientationEvent not supported!");
@@ -117,7 +125,7 @@
 <div id="debug">Waiting for interaction...</div>
 <button onclick="requestOrientationPermission()">Request Orientation Access</button>
 <button onclick="start()">Start</button>
-<button onclick="playTestSound()">Test Sound4</button>
+<button onclick="playTestSound()">Test Sound5</button>
 
 
 
