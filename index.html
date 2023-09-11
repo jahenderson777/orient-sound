@@ -4,20 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gyroscope and Compass Sound</title>
+    <style>
+        #debug {
+            border: 1px solid black;
+            padding: 10px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
 
 <script>
-    let audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    let oscillator1, oscillator2;
-    let gainNode1, gainNode2;
+    let audioContext;
 
     function startTones() {
-        // Create oscillators
-        oscillator1 = audioContext.createOscillator();
-        oscillator2 = audioContext.createOscillator();
-        gainNode1 = audioContext.createGain();
-        gainNode2 = audioContext.createGain();
+        let oscillator1 = audioContext.createOscillator();
+        let oscillator2 = audioContext.createOscillator();
+        let gainNode1 = audioContext.createGain();
+        let gainNode2 = audioContext.createGain();
 
         oscillator1.frequency.setValueAtTime(200, audioContext.currentTime);
         oscillator2.frequency.setValueAtTime(400, audioContext.currentTime);
@@ -27,42 +31,45 @@
 
         oscillator1.start();
         oscillator2.start();
+
+        // Add to debug
+        updateDebug("Tones started!");
     }
 
     if (window.DeviceOrientationEvent) {
         window.addEventListener("deviceorientation", function (event) {
-            // Obtain alpha for compass direction (0° to 360°, with 0° pointing north)
             let alpha = event.alpha;
-
-            // Calculate volume for compass direction
             let compassVolume = Math.sin(alpha * Math.PI / 180);
-            gainNode1.gain.value = Math.abs(compassVolume);
-
-            // Obtain beta for tilt (front-to-back) 
-            // Assuming -90° is face down and 90° is face up
             let beta = event.beta;
             let tiltVolume = beta / 90;
 
-            gainNode2.gain.value = Math.abs(tiltVolume);
+            updateDebug(`Alpha (compass): ${alpha.toFixed(2)} | Volume: ${compassVolume.toFixed(2)}<br>
+                         Beta (tilt): ${beta.toFixed(2)} | Volume: ${tiltVolume.toFixed(2)}`);
         }, true);
+    } else {
+        updateDebug("DeviceOrientationEvent not supported!");
     }
 
+    window.addEventListener("touchstart", function () {
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioContext.state === "suspended") {
+            audioContext.resume();
+        }
+        startTones();
+    });
 
-
-    let audioContext;
-window.addEventListener("touchstart", function () {
-    if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    // Function to update the debug div
+    function updateDebug(message) {
+        document.getElementById("debug").innerHTML = message;
     }
-    if (audioContext.state === "suspended") {
-        audioContext.resume();
-    }
-    startTones();
-});
 
 </script>
 
-<p>Click anywhere on the page to start. Adjust the orientation of your phone to hear changes in sound.3</p>
+<p>Click or tap anywhere on the page to start. Adjust the orientation of your phone to hear changes in sound and see debug information.</p>
+
+<div id="debug">Waiting for interaction...</div>
 
 </body>
 </html>
