@@ -48,7 +48,7 @@
     }
 
     // Request permission & start tones
-    window.addEventListener("click", function () {
+    window.addEventListener("touchstart", function () {
         if (audioContext.state === "suspended") {
             audioContext.resume();
         }
