@@ -65,11 +65,34 @@
         document.getElementById("debug").innerHTML = message;
     }
 
+    function requestOrientationPermission() {
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+            DeviceOrientationEvent.requestPermission()
+                .then(permissionState => {
+                    if (permissionState === 'granted') {
+                        window.addEventListener('deviceorientation', handleOrientation);
+                        updateDebug("Device orientation access granted.");
+                    } else {
+                        updateDebug("Device orientation access denied.");
+                    }
+                })
+                .catch(console.error);
+        } else {
+            // handle regular non iOS 13+ devices
+            window.addEventListener('deviceorientation', handleOrientation);
+            updateDebug("Device orientation event added without explicit permission.");
+        }
+    }
+
+
+
 </script>
 
 <p>Click or tap anywhere on the page to start. Adjust the orientation of your phone to hear changes in sound and see debug information.</p>
 
 <div id="debug">Waiting for interaction...</div>
+<button onclick="requestOrientationPermission()">Request Orientation Access</button>
+
 
 </body>
 </html>
