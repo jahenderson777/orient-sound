@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gyroscope and Compass Sound</title>
+</head>
+<body>
+
+<script>
+    let audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    let oscillator1, oscillator2;
+    let gainNode1, gainNode2;
+
+    function startTones() {
+        // Create oscillators
+        oscillator1 = audioContext.createOscillator();
+        oscillator2 = audioContext.createOscillator();
+        gainNode1 = audioContext.createGain();
+        gainNode2 = audioContext.createGain();
+
+        oscillator1.frequency.setValueAtTime(200, audioContext.currentTime);
+        oscillator2.frequency.setValueAtTime(400, audioContext.currentTime);
+        
+        oscillator1.connect(gainNode1).connect(audioContext.destination);
+        oscillator2.connect(gainNode2).connect(audioContext.destination);
+
+        oscillator1.start();
+        oscillator2.start();
+    }
+
+    if (window.DeviceOrientationEvent) {
+        window.addEventListener("deviceorientation", function (event) {
+            // Obtain alpha for compass direction (0° to 360°, with 0° pointing north)
+            let alpha = event.alpha;
+
+            // Calculate volume for compass direction
+            let compassVolume = Math.sin(alpha * Math.PI / 180);
+            gainNode1.gain.value = Math.abs(compassVolume);
+
+            // Obtain beta for tilt (front-to-back) 
+            // Assuming -90° is face down and 90° is face up
+            let beta = event.beta;
+            let tiltVolume = beta / 90;
+
+            gainNode2.gain.value = Math.abs(tiltVolume);
+        }, true);
+    }
+
+    // Request permission & start tones
+    window.addEventListener("click", function () {
+        if (audioContext.state === "suspended") {
+            audioContext.resume();
+        }
+        startTones();
+    });
+
+</script>
+
+<p>Click anywhere on the page to start. Adjust the orientation of your phone to hear changes in sound.</p>
+
+</body>
+</html>
