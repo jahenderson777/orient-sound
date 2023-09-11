@@ -89,15 +89,20 @@
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
         }
     
-        let testOscillator = audioContext.createOscillator();
-        testOscillator.frequency.setValueAtTime(440, audioContext.currentTime); // Standard A4 pitch for testing
+        audioContext.resume().then(() => {
+            let testOscillator = audioContext.createOscillator();
+            testOscillator.frequency.setValueAtTime(440, audioContext.currentTime); 
     
-        testOscillator.connect(audioContext.destination);
-        testOscillator.start();
-        testOscillator.stop(audioContext.currentTime + 1); // Play for 1 second
+            testOscillator.connect(audioContext.destination);
+            testOscillator.start();
+            testOscillator.stop(audioContext.currentTime + 1);
     
-        updateDebug("Trying to play test sound at 440Hz for 1 second.");
+            updateDebug("Trying to play test sound at 440Hz for 1 second.");
+        }).catch(error => {
+            updateDebug("Error playing sound: " + error.message);
+        });
     }
+
 
 
 </script>
