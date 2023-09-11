@@ -25,12 +25,12 @@
         gainNode2 = audioContext.createGain();
 
         oscillator1.frequency.setValueAtTime(200, audioContext.currentTime);
-        oscillator2.frequency.setValueAtTime(400, audioContext.currentTime);
+        oscillator2.frequency.setValueAtTime(600, audioContext.currentTime);
         
         oscillator1.connect(gainNode1).connect(audioContext.destination);
         oscillator2.connect(gainNode2).connect(audioContext.destination);
 
-        oscillator1.start();
+        // oscillator1.start();
         oscillator2.start();
 
         // Add to debug
@@ -116,7 +116,7 @@
 
 <div id="debug">Waiting for interaction...</div>
 <button onclick="requestOrientationPermission()">Request Orientation Access</button>
-<button onclick="playTestSound()">Test Sound2</button>
+<button onclick="playTestSound()">Test Sound3</button>
 
 
 
