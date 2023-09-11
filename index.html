@@ -16,12 +16,13 @@
 
 <script>
     let audioContext;
+    let oscillator1, oscillator2, gainNode1, gainNode2;
 
     function startTones() {
-        let oscillator1 = audioContext.createOscillator();
-        let oscillator2 = audioContext.createOscillator();
-        let gainNode1 = audioContext.createGain();
-        let gainNode2 = audioContext.createGain();
+        oscillator1 = audioContext.createOscillator();
+        oscillator2 = audioContext.createOscillator();
+        gainNode1 = audioContext.createGain();
+        gainNode2 = audioContext.createGain();
 
         oscillator1.frequency.setValueAtTime(200, audioContext.currentTime);
         oscillator2.frequency.setValueAtTime(400, audioContext.currentTime);
@@ -42,6 +43,10 @@
             let compassVolume = Math.sin(alpha * Math.PI / 180);
             let beta = event.beta;
             let tiltVolume = beta / 90;
+
+            gainNode1.gain.setValueAtTime(compassVolume, audioContext.currentTime); // Update compass sound volume
+            gainNode2.gain.setValueAtTime(tiltVolume, audioContext.currentTime);  // Update tilt sound volume
+
 
             updateDebug(`Alpha (compass): ${alpha.toFixed(2)} | Volume: ${compassVolume.toFixed(2)}<br>
                          Beta (tilt): ${beta.toFixed(2)} | Volume: ${tiltVolume.toFixed(2)}`);
@@ -111,7 +116,7 @@
 
 <div id="debug">Waiting for interaction...</div>
 <button onclick="requestOrientationPermission()">Request Orientation Access</button>
-<button onclick="playTestSound()">Test Sound</button>
+<button onclick="playTestSound()">Test Sound2</button>
 
 
 
