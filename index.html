@@ -47,13 +47,18 @@
         }, true);
     }
 
-    // Request permission & start tones
-    window.addEventListener("touchstart", function () {
-        if (audioContext.state === "suspended") {
-            audioContext.resume();
-        }
-        startTones();
-    });
+
+
+    let audioContext;
+window.addEventListener("touchstart", function () {
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioContext.state === "suspended") {
+        audioContext.resume();
+    }
+    startTones();
+});
 
 </script>
 
