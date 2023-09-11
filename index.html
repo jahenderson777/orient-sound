@@ -55,7 +55,7 @@
         updateDebug("DeviceOrientationEvent not supported!");
     }
 
-    window.addEventListener("touchstart", function () {
+    function start() {
         if (!audioContext) {
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
         }
@@ -63,7 +63,7 @@
             audioContext.resume();
         }
         startTones();
-    });
+    };
 
     // Function to update the debug div
     function updateDebug(message) {
@@ -116,6 +116,7 @@
 
 <div id="debug">Waiting for interaction...</div>
 <button onclick="requestOrientationPermission()">Request Orientation Access</button>
+<button onclick="start()">Start</button>
 <button onclick="playTestSound()">Test Sound3</button>
 
 
