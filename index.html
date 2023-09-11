@@ -84,6 +84,20 @@
         }
     }
 
+    function playTestSound() {
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+    
+        let testOscillator = audioContext.createOscillator();
+        testOscillator.frequency.setValueAtTime(440, audioContext.currentTime); // Standard A4 pitch for testing
+    
+        testOscillator.connect(audioContext.destination);
+        testOscillator.start();
+        testOscillator.stop(audioContext.currentTime + 1); // Play for 1 second
+    
+        updateDebug("Trying to play test sound at 440Hz for 1 second.");
+    }
 
 
 </script>
@@ -92,6 +106,8 @@
 
 <div id="debug">Waiting for interaction...</div>
 <button onclick="requestOrientationPermission()">Request Orientation Access</button>
+<button onclick="playTestSound()">Test Sound</button>
+
 
 
 </body>
